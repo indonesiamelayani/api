@@ -23,6 +23,18 @@ class Service extends REST_Controller {
                 $this->activity_model->counter_activity($this->security->xss_clean(trim($datapost->requestMethod)));
                 $this->activity_model->insert_activity($this->security->xss_clean(trim($datapost->requestMethod)) . ' ' . $refno . ' REQUEST ', $this->security->xss_clean(trim($this->post('request'))));
                 switch (trim($datapost->requestMethod)) {
+                    case 'addPost':
+                        $this->load->helper('post_helper');
+                        $this->response(addPost($this->post('request')));
+                        break;
+                    case 'getPost':
+                        $this->load->helper('post_helper');
+                        $this->response(getPost($this->post('request')));
+                        break;
+                    case 'goFollow':
+                        $this->load->helper('follower_helper');
+                        $this->response(goFollow($this->post('request')));
+                        break;
                     case 'inquiryPekerjaan':
                         $this->load->helper('user_helper');
                         $this->response(inquiryPekerjaan($this->post('request')));
@@ -46,6 +58,14 @@ class Service extends REST_Controller {
                     case 'postUser':
                         $this->load->helper('user_helper');
                         $this->response(postUser($this->post('request')));
+                        break;
+                    case 'cekFollowers':
+                        $this->load->helper('follower_helper');
+                        $this->response(cekFollowers($this->post('request')));
+                        break;
+                    case 'cekFollowed':
+                        $this->load->helper('follower_helper');
+                        $this->response(cekFollowed($this->post('request')));
                         break;
 
                     default:

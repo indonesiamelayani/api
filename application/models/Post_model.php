@@ -3,10 +3,34 @@
 if (!defined('BASEPATH'))
 exit('No direct script access allowed');
 
-class User_model extends CI_Model {
+class Post_model extends CI_Model {
     
     function __construct() {
         parent::__construct();
+    }
+
+    function insert_img($description, $user, $tag, $location, $data_insert){
+        $implus = $this->load->database('implus', TRUE);
+        $data = array(
+        'username' => $user,
+        'description' => $description,
+        'tag' => $tag,
+        'location' => $location,
+        'image' => $data_insert
+        );
+        $implus->set('date', 'NOW()', FALSE);
+        $implus->insert('post',$data);
+        $implus->close();
+        return $implus;
+    }
+
+    function getPost($username){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('username,description,tag,location,image');
+        $implus->where_in('username',$username);
+        $qryget = $implus->get('post');
+        $implus->close();
+        return $qryget;
     }
     
     function get_datapekerjaan() {

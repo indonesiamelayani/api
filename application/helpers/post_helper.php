@@ -2,7 +2,9 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-    function inquiryPekerjaan($request) {
+    
+
+    function addPost($request) {
     $result               = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
@@ -10,9 +12,11 @@ if (!defined('BASEPATH'))
     $user = '';
     $CI   = & get_instance();
     $CI->load->model('activity_model');
-    $CI->load->model('user_model');
+    $CI->load->model('post_model');
+    $CI->load->model('follower_model');
     $datapost = json_decode($request);
     try {
+        $requestData = $datapost->requestData;
         $user = $datapost->user;
         if ($CI->libs_bearer->cekToken() == false) {
             throw new Exception("Access Forbidden");
@@ -21,14 +25,42 @@ if (!defined('BASEPATH'))
         if (!isset($datapost->user)) {
             throw new Exception("Parameter user tidak valid");
         }
-        
-        $resdata = $CI->user_model->get_datapekerjaan();
-        if (!$resdata || $resdata->num_rows() == 0) {
-            throw new Exception("Data tidak ditemukan.");
+
+        $description = $requestData->description;
+
+        if (!isset($requestData->description)) {
+            throw new Exception("Parameter description tidak valid");
+        }
+
+        $tag = $requestData->tag;
+
+        if (!isset($requestData->tag)) {
+            throw new Exception("Parameter tag tidak valid");
+        }
+
+        $photo = $requestData->photo;
+
+        if (!isset($requestData->photo)) {
+            throw new Exception("Parameter photo tidak valid");
+        }
+
+        $location = $requestData->location;
+
+        $image = base64_decode($photo);
+        $image_name = md5(uniqid(rand(), true));
+        $filename = $image_name . '.' . 'png';
+        $path = "file/".$filename;
+        file_put_contents($path . $filename, $image);
+
+        $data_insert = $filename;
+
+        $resdata = $CI->post_model->insert_img($description, $user, $tag, $location, $data_insert);
+
+        if (!$resdata) {
+            throw new Exception("Gagal Post.");
         }
         $result->responseCode = '00';
-        $result->responseDesc = 'Inquiry Sukses.';
-        $result->responseData = $resdata->result();
+        $result->responseDesc = 'Post Berhasil';
 
     } catch (Exception $e) {
     	$result->responseCode = '99';
@@ -38,7 +70,7 @@ if (!defined('BASEPATH'))
     $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
     return $result;
 }
-    function getAllUser($request) {
+    function getPost($request) {
     $result               = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
@@ -46,7 +78,8 @@ if (!defined('BASEPATH'))
     $user = '';
     $CI   = & get_instance();
     $CI->load->model('activity_model');
-    $CI->load->model('user_model');
+    $CI->load->model('post_model');
+    $CI->load->model('follower_model');
     $datapost = json_decode($request);
     try {
         $user = $datapost->user;
@@ -57,13 +90,20 @@ if (!defined('BASEPATH'))
         if (!isset($datapost->user)) {
             throw new Exception("Parameter user tidak valid");
         }
-        
-        $resdata = $CI->user_model->getAllUser();
-        if (!$resdata || $resdata->num_rows() == 0) {
+        $follower = $CI->follower_model->cekFollowers($user)->result_array();
+        foreach( $follower as $key){
+        $data[] = $key['followerUsername'];
+}
+        // print_r($data);die;
+
+        $resdata = $CI->post_model->getPost($data);
+        // print_r($resdata->result());die;
+        if (!$resdata) {
             throw new Exception("Data tidak ditemukan.");
         }
+
         $result->responseCode = '00';
-        $result->responseDesc = 'Inquiry Sukses.';
+        $result->responseDesc = 'Get Post Sukses.';
         $result->responseData = $resdata->result();
 
     } catch (Exception $e) {
