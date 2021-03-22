@@ -26,15 +26,20 @@ if (!defined('BASEPATH'))
         if (!isset($datapost->usernameToFollow)) {
             throw new Exception("Parameter username to follow tidak valid");
         }
-        $usernameFollowers = $datapost->usernameToFollow;
+        
+        $usernametoFollow = $datapost->usernameToFollow;
 
         $getnama = $CI->follower_model->getNama($followerUsername)->result();
         $nama = $getnama[0]->nama;
 
         $getNamaFollow = $CI->follower_model->getNama($usernameFollowers)->result();
-        $namaFollower = $getNamaFollow[0]->nama;
+        $namatofollow = $getNamaFollow[0]->nama;
 
-        $resdata = $CI->follower_model->goFollow($nama, $followerUsername, $usernameFollowers, $namaFollower);
+        $cekFollow = $CI->follower_model->validasiFollow($usernametoFollow);
+        if($cekFollow->num_rows() != 0){
+            throw new Exception("Anda sudah follow akun @".$usernametoFollow."");
+        }
+        $resdata = $CI->follower_model->goFollow($nama, $followerUsername, $usernametoFollow, $namatofollow);
         if (!$resdata) {
             throw new Exception("Gagal Follow.");
         }
@@ -81,6 +86,9 @@ if (!defined('BASEPATH'))
     	$result->responseCode = '99';
     	$result->responseDesc = $e->getMessage()." Ln.".$e->getLine();
     }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
 }
 
     function cekFollowed($request) {
@@ -115,4 +123,7 @@ if (!defined('BASEPATH'))
     	$result->responseCode = '99';
     	$result->responseDesc = $e->getMessage()." Ln.".$e->getLine();
     }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
 }

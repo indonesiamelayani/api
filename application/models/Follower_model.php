@@ -22,6 +22,15 @@ class Follower_model extends CI_Model {
         return $implus;
     }
 
+    function validasiFollow($user){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('followerUsername');
+        $implus->where('followerUsername', $user);
+        $qryget = $implus->get('followers');
+        $implus->close();
+        return $qryget;
+    }
+
     function cekFollowers($username) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('followerUsername','followerNama');

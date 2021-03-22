@@ -24,10 +24,13 @@ class Post_model extends CI_Model {
         return $implus;
     }
 
-    function getPost($username){
+    function getPost($username, $offset){
+        $limit = 20;
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username,description,tag,location,image');
         $implus->where_in('username',$username);
+        $implus->order_by('date', 'DESC');
+        $implus->limit($offset, $limit);
         $qryget = $implus->get('post');
         $implus->close();
         return $qryget;

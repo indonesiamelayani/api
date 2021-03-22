@@ -75,7 +75,7 @@ class Service extends REST_Controller {
             unset($_SESSION['user']);
         } else {
             $this->activity_model->insert_activity_error('CRASH REPORT', json_encode($this->post()));
-            $this->response((object) array('responseCode' => '08', 'responseDesc' => 'Unknown Request Method', 'responseData' => array()), 404);
+            $this->response((object) array('responseCode' => '08', 'responseDesc' => 'Unknown Request Method or Not Isset', 'responseData' => array()), 404);
         }
     }
 
