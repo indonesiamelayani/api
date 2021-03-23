@@ -30,7 +30,7 @@ class User_model extends CI_Model {
 
     function getAllUser() {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('*');
+        $implus->select('username,nama,email,phone');
         $qryget = $implus->get('user');
         $implus->close();
         return $qryget;
@@ -38,7 +38,7 @@ class User_model extends CI_Model {
 
     function getUser($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('*');
+        $implus->select('username,nama,email,phone');
         $implus->where('username', $username);
         $qryget = $implus->get('user');
         $implus->close();

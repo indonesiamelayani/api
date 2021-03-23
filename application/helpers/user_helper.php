@@ -70,6 +70,9 @@ function getAllUser($request) {
         $result->responseCode = '99';
         $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
     }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
 }
 
 function getUser($request) {
@@ -91,12 +94,11 @@ function getUser($request) {
         if (!isset($datapost->user)) {
             throw new Exception("Parameter user tidak valid");
         }
-        if (!isset($datapost->username)) {
+        if (!isset($datapost->user)) {
             throw new Exception("Parameter id_user tidak valid");
         }
-        $username = $datapost->username;
 
-        $resdata = $CI->user_model->getUser($username);
+        $resdata = $CI->user_model->getUser($user);
         if (!$resdata || $resdata->num_rows() == 0) {
             throw new Exception("Data tidak ditemukan.");
         }
