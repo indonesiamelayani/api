@@ -1,28 +1,28 @@
 <?php
 
 if (!defined('BASEPATH'))
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 class Follower_model extends CI_Model {
-    
+
     function __construct() {
         parent::__construct();
     }
 
-    function goFollow($nama,$username,$followerUsername,$followerNama) {
+    function goFollow($nama, $username, $followerUsername, $followerNama) {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
-        'nama' => $nama,
-        'username' => $username,
-        'followerUsername' => $followerUsername,
-        'followerNama' => $followerNama
+            'nama' => $nama,
+            'username' => $username,
+            'followerUsername' => $followerUsername,
+            'followerNama' => $followerNama
         );
-        $implus->insert('followers',$data);
+        $implus->insert('followers', $data);
         $implus->close();
         return $implus;
     }
 
-    function validasiFollow($user){
+    function validasiFollow($user) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('followerUsername');
         $implus->where('followerUsername', $user);
@@ -33,7 +33,7 @@ class Follower_model extends CI_Model {
 
     function cekFollowers($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('followerUsername','followerNama');
+        $implus->select('followerUsername', 'followerNama');
         $implus->where('username', $username);
         $qryget = $implus->get('followers');
         $implus->close();
@@ -42,7 +42,7 @@ class Follower_model extends CI_Model {
 
     function cekFollowed($followerUsername) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username','nama');
+        $implus->select('username', 'nama');
         $implus->where('followerUsername', $followerUsername);
         $qryget = $implus->get('followers');
         $implus->close();
@@ -57,6 +57,5 @@ class Follower_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-
 
 }

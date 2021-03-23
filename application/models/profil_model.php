@@ -3,45 +3,26 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Post_model extends CI_Model {
+class Profil_model extends CI_Model {
 
     function __construct() {
         parent::__construct();
     }
 
-    function insert_img($description, $user, $tag, $location, $data_insert) {
+    function getProfilByID($username) {
         $implus = $this->load->database('implus', TRUE);
-        $data = array(
-            'username' => $user,
-            'description' => $description,
-            'tag' => $tag,
-            'location' => $location,
-            'image' => $data_insert
-        );
-        $implus->set('date', 'NOW()', FALSE);
-        $implus->insert('post', $data);
-        $implus->close();
-        return $implus;
-    }
-
-    function getPost($username, $offset, $limit) {
-        $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,location,image,date');
-        $implus->where_in('username', $username);
-        $implus->order_by('date', 'DESC');
-        $implus->limit($limit, $offset);
-        $qryget = $implus->get('post');
+        $qryget = $implus->query('SELECT `nama`, `username`, COUNT(`followerUsername`) as jumlahFollower FROM `followers` WHERE `username`= "'.$username.'" GROUP BY `nama`');
         $implus->close();
         return $qryget;
     }
-    
-    function getPostByID($username, $offset, $limit) {
+
+    function getProfilDetail($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,location,image,date');
-        $implus->where('username', $username);
+        $implus->select('username,nama,tag,location,image');
+        $implus->where_in('username', $username);
         $implus->order_by('date', 'DESC');
         $implus->limit($limit, $offset);
-        $qryget = $implus->get('post');
+        $qryget = $implus->get('follower');
         $implus->close();
         return $qryget;
     }

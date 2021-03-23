@@ -1,14 +1,14 @@
 <?php
 
 if (!defined('BASEPATH'))
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 class User_model extends CI_Model {
-    
+
     function __construct() {
         parent::__construct();
     }
-    
+
     function get_datapekerjaan() {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('ID_PEKERJAAN,DESC1,DESC2');
@@ -16,8 +16,8 @@ class User_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function get_user($username,$password) {
+
+    function get_user($username, $password) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username,nama');
         $pass = md5($password);
@@ -27,14 +27,16 @@ class User_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    function getAllUser(){
+
+    function getAllUser() {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('*');
         $qryget = $implus->get('user');
         $implus->close();
         return $qryget;
     }
-    function getUser($username){
+
+    function getUser($username) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('*');
         $implus->where('username', $username);
@@ -42,7 +44,8 @@ class User_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    function postUser($id_user){
+
+    function postUser($id_user) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('*');
         $implus->where('id_user', $id_user);
@@ -69,20 +72,19 @@ class User_model extends CI_Model {
         return $qryget;
     }
 
-    function create_user($username,$nama,$password,$email,$phone) {
+    function create_user($username, $nama, $password, $email, $phone) {
         $implus = $this->load->database('implus', TRUE);
         $pass = md5($password);
         $data = array(
-        'username' => $username,
-        'nama' => $nama,
-        'password' => $pass,
-        'email' => $email,
-        'phone' => $phone
+            'username' => $username,
+            'nama' => $nama,
+            'password' => $pass,
+            'email' => $email,
+            'phone' => $phone
         );
-        $implus->insert('user',$data);
+        $implus->insert('user', $data);
         $implus->close();
         return $implus;
     }
-
 
 }
