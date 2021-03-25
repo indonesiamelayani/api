@@ -57,5 +57,14 @@ class Follower_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
+    
+    function unFollow($username, $followerUsername){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('nama');
+        $implus->where('username', $username);
+        $qryget = $implus->get('user');
+        $implus->close();
+        return $qryget;
+    }
 
 }

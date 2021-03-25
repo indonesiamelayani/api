@@ -94,9 +94,6 @@ function getUser($request) {
         if (!isset($datapost->user)) {
             throw new Exception("Parameter user tidak valid");
         }
-        if (!isset($datapost->user)) {
-            throw new Exception("Parameter id_user tidak valid");
-        }
 
         $resdata = $CI->user_model->getUser($user);
         if (!$resdata || $resdata->num_rows() == 0) {
