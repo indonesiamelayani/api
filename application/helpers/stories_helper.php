@@ -133,15 +133,20 @@ function deleteStories($request) {
         $id = $requestData->id;
         
         $cekID = $CI->stories_model->cekID($id);
+        $res = $cekID->result();
+        
         if ($cekID->num_rows() == 0) {
             throw new Exception("Stories tidak ada atau sudah dihapus.");
         }
+        $image = $res['0']->image;
+        $path = 'file/' . $user . '/' .$image;
         
         $resdata = $CI->stories_model->deleteStories($id);
         
         if (!$resdata) {
             throw new Exception("Delete Stories Gagal.");
         }
+        unlink($path);
         $result->responseCode = '00';
         $result->responseDesc = 'Delete Berhasil';
     } catch (Exception $e) {
