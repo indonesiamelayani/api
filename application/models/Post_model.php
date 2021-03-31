@@ -25,9 +25,45 @@ class Post_model extends CI_Model {
         return $implus;
     }
 
+    function insertLike($id_post, $user) {
+        $implus = $this->load->database('implus', TRUE);
+        $data = array(
+            'userlike' => $user,
+            'id_post' => $id_post
+        );
+        $implus->insert('like', $data);
+        $implus->close();
+        return $implus;
+    }
+    
+    function unLike($id_post, $user){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->where('id_post', $id_post);
+        $implus->where('userlike', $user);
+        $qryget = $implus->delete('like');
+        $implus->close();
+        return $qryget;
+    }
+    
+    function countLike($id_post){
+        $implus = $this->load->database('implus', TRUE);
+        $qryget = $implus->query('SELECT COUNT(*) as count FROM `like` WHERE id_post='.$id_post.'');
+        $implus->close();
+        return $qryget;
+    }
+    
+    function updateLike($id_post, $count){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->set('countLike', $count);
+        $implus->where('id', $id_post);
+        $implus->update('post');
+        $implus->close();
+        return $implus;
+    }
+    
     function getPost($username, $offset, $limit) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,kategori,location,image,date');
+        $implus->select('id,username,description,tag,kategori,location,image,date,countLike');
         $implus->where_in('username', $username);
         $implus->order_by('date', 'DESC');
         $implus->limit($limit, $offset);

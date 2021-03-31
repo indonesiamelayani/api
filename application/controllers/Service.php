@@ -28,6 +28,14 @@ class Service extends REST_Controller {
                     $this->load->helper('post_helper');
                     $this->response(addPost($this->post('request')));
                     break;
+                case 'addLike':
+                    $this->load->helper('post_helper');
+                    $this->response(addLike($this->post('request')));
+                    break;
+                case 'unlike':
+                    $this->load->helper('post_helper');
+                    $this->response(unLike($this->post('request')));
+                    break;
                 case 'addStories':
                     $this->load->helper('stories_helper');
                     $this->response(addStories($this->post('request')));
