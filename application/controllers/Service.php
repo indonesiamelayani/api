@@ -28,9 +28,25 @@ class Service extends REST_Controller {
                     $this->load->helper('post_helper');
                     $this->response(addPost($this->post('request')));
                     break;
+                case 'addStories':
+                    $this->load->helper('stories_helper');
+                    $this->response(addStories($this->post('request')));
+                    break;
                 case 'getPost':
                     $this->load->helper('post_helper');
                     $this->response(getPost($this->post('request')));
+                    break;
+                case 'deletePost':
+                    $this->load->helper('post_helper');
+                    $this->response(deletePost($this->post('request')));
+                    break;
+                case 'getStories':
+                    $this->load->helper('stories_helper');
+                    $this->response(getStories($this->post('request')));
+                    break;
+                case 'deleteStories':
+                    $this->load->helper('stories_helper');
+                    $this->response(deleteStories($this->post('request')));
                     break;
                 case 'goFollow':
                     $this->load->helper('follower_helper');
@@ -71,6 +87,10 @@ class Service extends REST_Controller {
                 case 'getTrendingTag':
                     $this->load->helper('home_helper');
                     $this->response(getTrendingTag($this->post('request')));
+                    break;
+                case 'getFeature':
+                    $this->load->helper('home_helper');
+                    $this->response(getFeature($this->post('request')));
                     break;
                 case 'getProfilByID':
                     $this->load->helper('profil_helper');

@@ -3,68 +3,67 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Post_model extends CI_Model {
+class Stories_model extends CI_Model {
 
     function __construct() {
         parent::__construct();
     }
 
-    function insert_img($description, $user, $tag, $location, $kategori, $data_insert) {
+    function insert_img($description, $user, $data_insert) {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'username' => $user,
             'description' => $description,
-            'tag' => $tag,
-            'location' => $location,
-            'image' => $data_insert,
-            'kategori' => $kategori
+            'image' => $data_insert
         );
         $implus->set('date', 'NOW()', FALSE);
-        $implus->insert('post', $data);
+        $implus->insert('stories', $data);
         $implus->close();
         return $implus;
     }
-
-    function getPost($username, $offset, $limit) {
-        $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,kategori,location,image,date');
-        $implus->where_in('username', $username);
-        $implus->order_by('date', 'DESC');
-        $implus->limit($limit, $offset);
-        $qryget = $implus->get('post');
-        $implus->close();
-        return $qryget;
-    }
     
-    function getIDPost($username, $data_insert){
+    function getIDStories($username, $data_insert){
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id');
         $implus->where('username', $username);
         $implus->where('image', $data_insert);
-        $qryget = $implus->get('post');
+        $qryget = $implus->get('stories');
         $implus->close();
         return $qryget;
     }
-    function cekID($id){
+
+    function getStories($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id, image');
-        $implus->where('id', $id);
-        $qryget = $implus->get('post');
+        $implus->select('username, image');
+        $implus->where_in('username', $username);
+        $where = 'DATE(`date`) > DATE(NOW() - INTERVAL 1 DAY)';
+        $implus->where($where);
+        $implus->order_by('date', 'DESC');
+        $qryget = $implus->get('stories');
         $implus->close();
         return $qryget;
     }
     
-    function deletePost($id){
+    function cekID($id){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('id, image');
+        $implus->where('id', $id);
+        $qryget = $implus->get('stories');
+        $implus->close();
+        return $qryget;
+    }
+    
+    function deleteStories($id){
         $implus = $this->load->database('implus', TRUE);
         $implus->where('id', $id);
-        $qryget = $implus->delete('post');
+        $qryget = $implus->delete('stories');
         $implus->close();
         return $qryget;
     }
     
     function getPostByID($username, $offset, $limit) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,kategori,location,image,date');
+        $implus->select('username,description,tag,location,image,date');
         $implus->where('username', $username);
         $implus->order_by('date', 'DESC');
         $implus->limit($limit, $offset);

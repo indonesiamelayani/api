@@ -23,7 +23,15 @@ class Home_model extends CI_Model {
     function getTrendingTag() {
         $implus = $this->load->database('implus', TRUE);
 //        $implus->query('SELECT `tag`, COUNT(`tag`) FROM `post` ORDER BY `date` DESC limit 10');
-        $qryget = $implus->query('SELECT `tag`, COUNT(`tag`) as count FROM `post` GROUP BY `tag` ORDER BY count DESC LIMIT 5');
+        $qryget = $implus->query('SELECT `tag`, COUNT(`tag`) as count FROM `post` WHERE DATE(`date`) > DATE(NOW() - INTERVAL 1 DAY) GROUP BY `tag` ORDER BY count DESC LIMIT 5');
+        $implus->close();
+        return $qryget;
+    }
+    
+    function getFeature(){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('id, feature');
+        $qryget = $implus->get('featured');
         $implus->close();
         return $qryget;
     }

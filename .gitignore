@@ -2,3 +2,4 @@
 vendor
 .idea
 /nbproject/private/
+application/models/Activity_model copy.php
