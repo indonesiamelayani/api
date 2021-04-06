@@ -32,9 +32,10 @@ class Stories_model extends CI_Model {
         return $qryget;
     }
 
-    function getStories($username) {
+    function getStories($username, $user) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username, image');
+        array_push($username,$user);
         $implus->where_in('username', $username);
         $where = 'DATE(`date`) > DATE(NOW() - INTERVAL 1 DAY)';
         $implus->where($where);

@@ -104,8 +104,16 @@ class Service extends REST_Controller {
                     $this->load->helper('profil_helper');
                     $this->response(getProfilByID($this->post('request')));
                     break;
-                case 'getPostByID':
+                case 'getPostByUser':
                     $this->load->helper('profil_helper');
+                    $this->response(getPostByUser($this->post('request')));
+                    break;
+                case 'getAllPost':
+                    $this->load->helper('post_helper');
+                    $this->response(getAllPost($this->post('request')));
+                    break;
+                case 'getPostByID':
+                    $this->load->helper('post_helper');
                     $this->response(getPostByID($this->post('request')));
                     break;
 

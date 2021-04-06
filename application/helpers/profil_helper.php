@@ -41,7 +41,7 @@ function getProfilByID($request) {
     return $result;
 }
 
-function getPostByID($request) {
+function getPostByUser($request) {
     $result = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
@@ -67,13 +67,13 @@ function getPostByID($request) {
         }
         $limit = 2;
         $pagging = $page * $limit;
-        $resdata = $CI->post_model->getPostByID($user, $pagging, $limit)->result();
+        $resdata = $CI->post_model->getPostByUser($user, $pagging, $limit)->result();
         if (!$resdata) {
             throw new Exception("Data tidak ditemukan.");
         }
 
         $result->responseCode = '00';
-        $result->responseDesc = 'Get Post By ID Sukses.';
+        $result->responseDesc = 'Get Post By User Sukses.';
         $result->responseData = $resdata;
     } catch (Exception $e) {
         $result->responseCode = '99';
