@@ -224,6 +224,10 @@ function register($request) {
         if (!isset($requestData->email)) {
             throw new Exception("Parameter email tidak valid");
         }
+        $foto = $requestData->foto;
+        if (!isset($requestData->foto)) {
+            throw new Exception("Parameter email tidak valid");
+        }
         $phone = $requestData->phone;
         if (!isset($requestData->phone)) {
             throw new Exception("Parameter phone tidak valid");
@@ -236,7 +240,8 @@ function register($request) {
         if ($ceknohp->num_rows() != 0) {
             throw new Exception("Nomor HP sudah digunakan");
         }
-        $resdata = $CI->user_model->create_user($username, $nama, $password, $email, $phone);
+
+        $resdata = $CI->user_model->create_user($username, $nama, $password, $email, $phone, $foto);
         if (!$resdata) {
             throw new Exception("Data tidak berhasil disimpan.");
         }

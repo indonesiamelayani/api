@@ -72,7 +72,7 @@ class User_model extends CI_Model {
         return $qryget;
     }
 
-    function create_user($username, $nama, $password, $email, $phone) {
+    function create_user($username, $nama, $password, $email, $phone, $foto) {
         $implus = $this->load->database('implus', TRUE);
         $pass = md5($password);
         $data = array(
@@ -80,7 +80,8 @@ class User_model extends CI_Model {
             'nama' => $nama,
             'password' => $pass,
             'email' => $email,
-            'phone' => $phone
+            'phone' => $phone,
+            'foto' => $foto
         );
         $implus->insert('user', $data);
         $implus->close();
