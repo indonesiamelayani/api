@@ -32,7 +32,7 @@ function goFollow($request) {
         $getnama = $CI->follower_model->getNama($followerUsername)->result();
         $nama = $getnama[0]->nama;
 
-        $getNamaFollow = $CI->follower_model->getNama($usernameFollowers)->result();
+        $getNamaFollow = $CI->follower_model->getNama($usernametoFollow)->result();
         $namatofollow = $getNamaFollow[0]->nama;
 
         $cekFollow = $CI->follower_model->validasiFollow($usernametoFollow);
