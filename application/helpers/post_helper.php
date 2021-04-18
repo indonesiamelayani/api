@@ -65,7 +65,7 @@ function addPost($request) {
         $path = 'file/' . $user . '/';
         file_put_contents($path . $filename, $image);
 
-        $data_insert = $filename;
+        $data_insert = $user.'/'.$filename;
 
         $resdata = $CI->post_model->insert_img($judul, $description, $user, $tag, $location, $kategori, $data_insert);
         
