@@ -35,8 +35,9 @@ function goFollow($request) {
         $getNamaFollow = $CI->follower_model->getNama($usernametoFollow)->result();
         $namatofollow = $getNamaFollow[0]->nama;
 
-        $cekFollow = $CI->follower_model->validasiFollow($usernametoFollow);
-        if ($cekFollow->num_rows() != 0) {
+        $cekFollow = $CI->follower_model->validasiFollow($usernametoFollow, $followerUsername)->result();
+        // print_r($cekFollow);die;
+        if ($cekFollow[0]->username == $followerUsername) {
             throw new Exception("Anda sudah follow akun @" . $usernametoFollow . "");
         }
         $resdata = $CI->follower_model->goFollow($nama, $followerUsername, $usernametoFollow, $namatofollow);
