@@ -30,7 +30,7 @@ class Home_model extends CI_Model {
     
     function getFeature(){
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id, feature');
+        $implus->select('id, feature, image');
         $qryget = $implus->get('featured');
         $implus->close();
         return $qryget;
