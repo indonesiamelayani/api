@@ -9,10 +9,11 @@ class Post_model extends CI_Model {
         parent::__construct();
     }
 
-    function insert_img($description, $user, $tag, $location, $kategori, $data_insert) {
+    function insert_img($judul, $description, $user, $tag, $location, $kategori, $data_insert) {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'username' => $user,
+            'judul' => $judul,
             'description' => $description,
             'tag' => $tag,
             'location' => $location,
@@ -63,7 +64,7 @@ class Post_model extends CI_Model {
     
     function getPost($username, $offset, $limit, $user) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id,username,description,tag,kategori,location,image,date,countLike');
+        $implus->select('id,username,judul,description,tag,kategori,location,image,date,countLike');
         array_push($username, $user);
         $implus->where_in('username', $username);
         $implus->order_by('date', 'DESC');
@@ -75,7 +76,7 @@ class Post_model extends CI_Model {
 
     function getAllPost($limit, $offset) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id,username,description,tag,kategori,location,image,date,countLike');
+        $implus->select('id,username,judul,description,tag,kategori,location,image,date,countLike');
         $where = 'DATE(`date`) > DATE(NOW() - INTERVAL 2 DAY)';
         $implus->where($where);
         $implus->order_by('date', 'DESC');
@@ -113,7 +114,7 @@ class Post_model extends CI_Model {
     
     function getPostByUser($username, $offset, $limit) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,kategori,location,image,date');
+        $implus->select('username,judul,description,tag,kategori,location,image,date');
         $implus->where('username', $username);
         $implus->order_by('date', 'DESC');
         $implus->limit($limit, $offset);
@@ -124,7 +125,7 @@ class Post_model extends CI_Model {
     
     function getPostByID($id) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id,username,description,tag,kategori,location,image,date');
+        $implus->select('id,username,judul,description,tag,kategori,location,image,date');
         $implus->where('id', $id);
         $qryget = $implus->get('post');
         $implus->close();

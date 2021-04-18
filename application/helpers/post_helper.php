@@ -25,6 +25,11 @@ function addPost($request) {
             throw new Exception("Parameter user tidak valid");
         }
 
+        $judul = $requestData->judul;
+
+        if (!isset($requestData->judul)) {
+            throw new Exception("Parameter judul tidak valid");
+        }
         $description = $requestData->description;
 
         if (!isset($requestData->description)) {
