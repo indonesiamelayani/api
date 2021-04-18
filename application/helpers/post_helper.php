@@ -67,7 +67,7 @@ function addPost($request) {
 
         $data_insert = $filename;
 
-        $resdata = $CI->post_model->insert_img($description, $user, $tag, $location, $kategori, $data_insert);
+        $resdata = $CI->post_model->insert_img($judul, $description, $user, $tag, $location, $kategori, $data_insert);
         
         $resid = $CI->post_model->getIDPost($user, $data_insert);
         if (!$resdata) {
