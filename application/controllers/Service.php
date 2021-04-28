@@ -60,6 +60,10 @@ class Service extends REST_Controller {
                     $this->load->helper('follower_helper');
                     $this->response(goFollow($this->post('request')));
                     break;
+                case 'unfollow':
+                    $this->load->helper('follower_helper');
+                    $this->response(unfollow($this->post('request')));
+                    break;
                 case 'inquiryPekerjaan':
                     $this->load->helper('user_helper');
                     $this->response(inquiryPekerjaan($this->post('request')));

@@ -87,14 +87,17 @@ function getStories($request) {
         foreach ($follower as $key) {
             $data[] = $key['followerUsername'];
         }
-        $resdata = $CI->stories_model->getStories($data, $user)->result();
+        $resdata = $CI->stories_model->getStories($data)->result();
+        $resmydata = $CI->stories_model->getStories($user)->result();
         if (!$resdata) {
             throw new Exception("Data tidak ditemukan.");
         }
 
+        $hasil['userImage'] = $resmydata;
+        $hasil['storyImage'] = $resdata;
         $result->responseCode = '00';
         $result->responseDesc = 'Get Stories Sukses.';
-        $result->responseData = $resdata;
+        $result->responseData = $hasil;
     } catch (Exception $e) {
         $result->responseCode = '99';
         $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();

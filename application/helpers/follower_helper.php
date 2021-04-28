@@ -54,6 +54,46 @@ function goFollow($request) {
     $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
     return $result;
 }
+function unfollow($request) {
+    $result = new stdClass;
+    $result->responseCode = "";
+    $result->responseDesc = "";
+
+    $user = '';
+    $CI = & get_instance();
+    $CI->load->model('activity_model');
+    $CI->load->model('follower_model');
+    $datapost = json_decode($request);
+    try {
+        $username = $datapost->username;
+        if ($CI->libs_bearer->cekToken() == false) {
+            throw new Exception("Access Forbidden");
+        }
+
+        if (!isset($datapost->username)) {
+            throw new Exception("Parameter username tidak valid");
+        }
+
+        if (!isset($datapost->usernameUnfollow)) {
+            throw new Exception("Parameter username to follow tidak valid");
+        }
+
+        $usernameUnfollow = $datapost->usernameUnfollow;
+
+        $resdata = $CI->follower_model->unFollow($username, $usernameUnfollow);
+        if (!$resdata) {
+            throw new Exception("Anda Sudah Unfollow");
+        }
+        $result->responseCode = '00';
+        $result->responseDesc = 'Unfollow Sukses.';
+    } catch (Exception $e) {
+        $result->responseCode = '99';
+        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
+    }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
+}
 
 function cekFollowers($request) {
     $result = new stdClass;

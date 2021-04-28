@@ -32,14 +32,16 @@ class Stories_model extends CI_Model {
         return $qryget;
     }
 
-    function getStories($username, $user) {
+    function getStories($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username, image');
-        array_push($username,$user);
-        $implus->where_in('username', $username);
-        $where = 'DATE(`date`) > DATE(NOW() - INTERVAL 1 DAY)';
+        $implus->select('user.foto as userImage, stories.username, stories.image');
+        $implus->where_in('stories.username', $username);
+        $where = 'DATE(stories.date) > DATE(NOW() - INTERVAL 1 DAY)';
         $implus->where($where);
-        $implus->order_by('date', 'DESC');
+        // $implus->from('stories');
+        $implus->join('user', 'stories.username = user.username');
+        $implus->group_by('stories.username');
+        $implus->order_by('stories.date', 'DESC');
         $qryget = $implus->get('stories');
         $implus->close();
         return $qryget;

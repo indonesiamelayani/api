@@ -46,6 +46,28 @@ class Post_model extends CI_Model {
         return $qryget;
     }
     
+    function insertLikeComment($id_comment, $id_post, $user) {
+        $implus = $this->load->database('implus', TRUE);
+        $data = array(
+            'userlike' => $user,
+            'id_post' => $id_post,
+            'id_comment' => $id_comment
+        );
+        $implus->insert('comment', $data);
+        $implus->close();
+        return $implus;
+    }
+    
+    function unLikeComment($id_comment, $id_post, $user){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->where('id_comment', $$id_comment);
+        $implus->where('id_post', $id_post);
+        $implus->where('userlike', $user);
+        $qryget = $implus->delete('comment');
+        $implus->close();
+        return $qryget;
+    }
+    
     function countLike($id_post){
         $implus = $this->load->database('implus', TRUE);
         $qryget = $implus->query('SELECT COUNT(*) as count FROM `like` WHERE id_post='.$id_post.'');
@@ -61,10 +83,25 @@ class Post_model extends CI_Model {
         $implus->close();
         return $implus;
     }
+    function countLikeComment($id_comment,$id_post){
+        $implus = $this->load->database('implus', TRUE);
+        $qryget = $implus->query('SELECT COUNT(*) as count FROM `commentLike` WHERE id_post='.$id_post.'');
+        $implus->close();
+        return $qryget;
+    }
+    
+    function updateLikeComment($id_post, $count){
+        $implus = $this->load->database('implus', TRUE);
+        $implus->set('countLikeComment', $count);
+        $implus->where('id', $id_post);
+        $implus->update('post');
+        $implus->close();
+        return $implus;
+    }
     
     function getPost($username, $offset, $limit, $user) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id,username,judul,description,tag,kategori,location,image,date,countLike');
+        $implus->select('id, (SELECT foto FROM user WHERE username="'.$user.'") AS profileImg ,username,judul,description,tag,kategori,location,image,date,countLike');
         array_push($username, $user);
         $implus->where_in('username', $username);
         $implus->order_by('date', 'DESC');

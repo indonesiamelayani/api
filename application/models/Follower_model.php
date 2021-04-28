@@ -22,6 +22,15 @@ class Follower_model extends CI_Model {
         return $implus;
     }
 
+    function unFollow($username, $usernameUnfollow) {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->where('username', $username);
+        $implus->where('followerUsername', $usernameUnfollow);
+        $implus->delete('followers');
+        $implus->close();
+        return $implus;
+    }
+
     function validasiFollow($user, $followerUsername) {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username');
@@ -51,15 +60,6 @@ class Follower_model extends CI_Model {
     }
 
     function getNama($username) {
-        $implus = $this->load->database('implus', TRUE);
-        $implus->select('nama');
-        $implus->where('username', $username);
-        $qryget = $implus->get('user');
-        $implus->close();
-        return $qryget;
-    }
-    
-    function unFollow($username, $followerUsername){
         $implus = $this->load->database('implus', TRUE);
         $implus->select('nama');
         $implus->where('username', $username);
