@@ -28,6 +28,10 @@ class Service extends REST_Controller {
                     $this->load->helper('post_helper');
                     $this->response(addPost($this->post('request')));
                     break;
+                case 'addComment':
+                    $this->load->helper('post_helper');
+                    $this->response(addComment($this->post('request')));
+                    break;
                 case 'addLike':
                     $this->load->helper('post_helper');
                     $this->response(addLike($this->post('request')));
@@ -36,6 +40,14 @@ class Service extends REST_Controller {
                     $this->load->helper('post_helper');
                     $this->response(unLike($this->post('request')));
                     break;
+                case 'addLikeComment':
+                    $this->load->helper('post_helper');
+                    $this->response(addLikeComment($this->post('request')));
+                    break;
+                case 'unlikeComment':
+                    $this->load->helper('post_helper');
+                    $this->response(unLikeComment($this->post('request')));
+                    break;
                 case 'addStories':
                     $this->load->helper('stories_helper');
                     $this->response(addStories($this->post('request')));
@@ -43,6 +55,10 @@ class Service extends REST_Controller {
                 case 'getPost':
                     $this->load->helper('post_helper');
                     $this->response(getPost($this->post('request')));
+                    break;
+                case 'getComment':
+                    $this->load->helper('post_helper');
+                    $this->response(getComment($this->post('request')));
                     break;
                 case 'deletePost':
                     $this->load->helper('post_helper');

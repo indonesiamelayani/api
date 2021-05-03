@@ -460,3 +460,103 @@ function getPostByID($request) {
     $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
     return $result;
 }
+
+function addComment($request) {
+    $result = new stdClass;
+    $result->responseCode = "";
+    $result->responseDesc = "";
+
+    $user = '';
+    $CI = & get_instance();
+    $CI->load->model('activity_model');
+    $CI->load->model('post_model');
+    $CI->load->model('follower_model');
+    $datapost = json_decode($request);
+    try {
+        $requestData = $datapost->requestData;
+        $user = $datapost->user;
+        if ($CI->libs_bearer->cekToken() == false) {
+            throw new Exception("Access Forbidden");
+        }
+
+        if (!isset($datapost->user)) {
+            throw new Exception("Parameter user tidak valid");
+        }
+
+        $id_post = $requestData->$id_post;
+
+        if (!isset($requestData->$id_post)) {
+            throw new Exception("Parameter $id_post tidak valid");
+        }
+        $comment = $requestData->$comment;
+
+        if (!isset($requestData->$comment)) {
+            throw new Exception("Parameter $comment tidak valid");
+        }
+
+        $resdata = $CI->post_model->addComment($user, $id_post, $comment);
+        
+        $resid = $CI->post_model->getCommentID($user, $id_post);
+        if (!$resdata) {
+            throw new Exception("Comment Gagal.");
+        }
+        $result->responseCode = '00';
+        $result->responseDesc = 'Add Comment Berhasil';
+        $result->responseData = $resid->result();
+    } catch (Exception $e) {
+        $result->responseCode = '99';
+        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
+    }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
+}
+
+function getComment($request) {
+    $result = new stdClass;
+    $result->responseCode = "";
+    $result->responseDesc = "";
+
+    $user = '';
+    $CI = & get_instance();
+    $CI->load->model('activity_model');
+    $CI->load->model('post_model');
+    $CI->load->model('follower_model');
+    $datapost = json_decode($request);
+    try {
+        $user = $datapost->user;
+        if ($CI->libs_bearer->cekToken() == false) {
+            throw new Exception("Access Forbidden");
+        }
+
+        if (!isset($datapost->user)) {
+            throw new Exception("Parameter user tidak valid");
+        }
+        
+        if (!isset($datapost->id_post)) {
+            throw new Exception("Parameter id_post tidak valid");
+        }
+        
+        $id_post = $datapost->id_post;
+        
+        $userComment = $CI->post_model->cekUsernameComment($id_post)->result_array();
+        foreach ($userComment as $key) {
+            $data[] = $key['username'];
+        }
+        
+        $resdata = $CI->post_model->getComment($data, $id_post)->result();
+        if (!$resdata) {
+            throw new Exception("Data tidak ditemukan.");
+        }
+
+        $result->responseCode = '00';
+        $result->responseDesc = 'Get Post Sukses.';
+        $result->responseData = $resdata;
+    } catch (Exception $e) {
+        $result->responseCode = '99';
+        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
+    }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
+}
