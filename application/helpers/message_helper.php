@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-function addMessage($request) {
+function kirimPesan($request) {
     $result = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
@@ -11,7 +11,7 @@ function addMessage($request) {
     $user = '';
     $CI = & get_instance();
     $CI->load->model('activity_model');
-    $CI->load->model('post_model');
+    $CI->load->model('message_model');
     $CI->load->model('follower_model');
     $datapost = json_decode($request);
     try {
@@ -24,45 +24,24 @@ function addMessage($request) {
         if (!isset($datapost->user)) {
             throw new Exception("Parameter user tidak valid");
         }
-
-        $description = $requestData->description;
-
-        if (!isset($requestData->description)) {
-            throw new Exception("Parameter description tidak valid");
+        
+        if(!isset($requestData->received_by)) {
+            throw new Exception("Parameter received_by tidak valid");
         }
+        $received_by = $requestData->received_by;
 
-        $tag = $requestData->tag;
-
-        if (!isset($requestData->tag)) {
-            throw new Exception("Parameter tag tidak valid");
+        if(!isset($requestData->pesan)) {
+            throw new Exception("Parameter pesan tidak valid");
         }
+        $pesan = $requestData->pesan;
 
-        $photo = $requestData->photo;
-
-        if (!isset($requestData->photo)) {
-            throw new Exception("Parameter photo tidak valid");
-        }
-
-        $location = $requestData->location;
-
-        $image = base64_decode($photo);
-        $image_name = md5(uniqid(rand(), true));
-        $filename = $image_name . '.' . 'png';
-        if (!file_exists('file/' . $user)) {
-            mkdir('file/' . $user, 0777, true);
-        }
-        $path = 'file/' . $user . '/';
-        file_put_contents($path . $filename, $image);
-
-        $data_insert = $filename;
-
-        $resdata = $CI->post_model->insert_img($description, $user, $tag, $location, $data_insert);
+        $resdata = $CI->message_model->addPesan($user, $received_by, $pesan);
 
         if (!$resdata) {
-            throw new Exception("Gagal Post.");
+            throw new Exception("Gagal Kirim Pesan.");
         }
         $result->responseCode = '00';
-        $result->responseDesc = 'Post Berhasil';
+        $result->responseDesc = 'Kirim Pesan Berhasil';
     } catch (Exception $e) {
         $result->responseCode = '99';
         $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
@@ -72,7 +51,7 @@ function addMessage($request) {
     return $result;
 }
 
-function getPost($request) {
+function getPesan($request) {
     $result = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
@@ -80,7 +59,7 @@ function getPost($request) {
     $user = '';
     $CI = & get_instance();
     $CI->load->model('activity_model');
-    $CI->load->model('post_model');
+    $CI->load->model('message_model');
     $CI->load->model('follower_model');
     $datapost = json_decode($request);
     try {
@@ -103,13 +82,13 @@ function getPost($request) {
         }
         $limit = 2;
         $pagging = $page * $limit;
-        $resdata = $CI->post_model->getPost($data, $pagging, $limit)->result();
+        $resdata = $CI->message_model->getPesan($data, $pagging, $limit, $user)->result();
         if (!$resdata) {
             throw new Exception("Data tidak ditemukan.");
         }
 
         $result->responseCode = '00';
-        $result->responseDesc = 'Get Post Sukses.';
+        $result->responseDesc = 'Get Pesan Sukses.';
         $result->responseData = $resdata;
     } catch (Exception $e) {
         $result->responseCode = '99';
