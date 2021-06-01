@@ -225,7 +225,7 @@ class Post_model extends CI_Model
     function getComment($username, $id_post)
     {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id, user.name as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
+        $implus->select('comment.id, user.nama as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
         $implus->where('id_post', $id_post);
         $implus->order_by('date', 'DESC');
         $implus->join('user', 'user.username = comment.username');

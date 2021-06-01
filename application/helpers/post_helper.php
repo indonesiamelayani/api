@@ -537,22 +537,19 @@ function getComment($request)
     $CI->load->model('follower_model');
     $datapost = json_decode($request);
     try {
-        $user = $datapost->user;
         if ($CI->libs_bearer->cekToken() == false) {
             throw new Exception("Access Forbidden");
-        }
-
-        if (!isset($datapost->user)) {
-            throw new Exception("Parameter user tidak valid");
         }
 
         if (!isset($datapost->id_post)) {
             throw new Exception("Parameter id_post tidak valid");
         }
-
         $id_post = $datapost->id_post;
 
         $userComment = $CI->post_model->cekUsernameComment($id_post)->result_array();
+        if (!$userComment) {
+            throw new Exception("Data tidak ditemukan.");
+        }
         foreach ($userComment as $key) {
             $data[] = $key['username'];
         }
