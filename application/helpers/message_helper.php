@@ -3,13 +3,14 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-function addMessage($request) {
+function addMessage($request)
+{
     $result = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
 
     $user = '';
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->load->model('activity_model');
     $CI->load->model('post_model');
     $CI->load->model('follower_model');
@@ -72,13 +73,14 @@ function addMessage($request) {
     return $result;
 }
 
-function getPost($request) {
+function getPost($request)
+{
     $result = new stdClass;
     $result->responseCode = "";
     $result->responseDesc = "";
 
     $user = '';
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->load->model('activity_model');
     $CI->load->model('post_model');
     $CI->load->model('follower_model');

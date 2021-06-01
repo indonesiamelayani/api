@@ -3,13 +3,16 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Post_model extends CI_Model {
+class Post_model extends CI_Model
+{
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
     }
 
-    function insert_img($judul, $description, $user, $tag, $location, $kategori, $data_insert) {
+    function insert_img($judul, $description, $user, $tag, $location, $kategori, $data_insert)
+    {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'username' => $user,
@@ -26,7 +29,8 @@ class Post_model extends CI_Model {
         return $implus;
     }
 
-    function insertLike($id_post, $user) {
+    function insertLike($id_post, $user)
+    {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'userlike' => $user,
@@ -36,8 +40,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $implus;
     }
-    
-    function unLike($id_post, $user){
+
+    function unLike($id_post, $user)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->where('id_post', $id_post);
         $implus->where('userlike', $user);
@@ -45,8 +50,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function insertLikeComment($id_comment, $id_post, $user) {
+
+    function insertLikeComment($id_comment, $id_post, $user)
+    {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'userlike' => $user,
@@ -57,8 +63,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $implus;
     }
-    
-    function unLikeComment($id_comment, $id_post, $user){
+
+    function unLikeComment($id_comment, $id_post, $user)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->where('id_comment', $$id_comment);
         $implus->where('id_post', $id_post);
@@ -67,15 +74,17 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function countLike($id_post){
+
+    function countLike($id_post)
+    {
         $implus = $this->load->database('implus', TRUE);
-        $qryget = $implus->query('SELECT COUNT(*) as count FROM `like` WHERE id_post='.$id_post.'');
+        $qryget = $implus->query('SELECT COUNT(*) as count FROM `like` WHERE id_post=' . $id_post . '');
         $implus->close();
         return $qryget;
     }
-    
-    function updateLike($id_post, $count){
+
+    function updateLike($id_post, $count)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->set('countLike', $count);
         $implus->where('id', $id_post);
@@ -83,14 +92,16 @@ class Post_model extends CI_Model {
         $implus->close();
         return $implus;
     }
-    function countLikeComment($id_comment,$id_post){
+    function countLikeComment($id_comment, $id_post)
+    {
         $implus = $this->load->database('implus', TRUE);
-        $qryget = $implus->query('SELECT COUNT(*) as count FROM `commentLike` WHERE id_post='.$id_post.'');
+        $qryget = $implus->query('SELECT COUNT(*) as count FROM `commentLike` WHERE id_post=' . $id_post . '');
         $implus->close();
         return $qryget;
     }
-    
-    function updateLikeComment($id_post, $count){
+
+    function updateLikeComment($id_post, $count)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->set('countLikeComment', $count);
         $implus->where('id', $id_post);
@@ -98,10 +109,11 @@ class Post_model extends CI_Model {
         $implus->close();
         return $implus;
     }
-    
-    function getPost($username, $offset, $limit, $user) {
+
+    function getPost($username, $offset, $limit, $user)
+    {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id, (SELECT foto FROM user WHERE username="'.$user.'") AS profileImg ,username,judul,description,tag,kategori,location,image,date,countLike');
+        $implus->select('id, (SELECT foto FROM user WHERE username="' . $user . '") AS profileImg ,username,judul,description,tag,kategori,location,image,date,countLike');
         array_push($username, $user);
         $implus->where_in('username', $username);
         $implus->order_by('date', 'DESC');
@@ -111,7 +123,8 @@ class Post_model extends CI_Model {
         return $qryget;
     }
 
-    function getAllPost($limit, $offset) {
+    function getAllPost($limit, $offset)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id,username,judul,description,tag,kategori,location,image,date,countLike');
         $where = 'DATE(`date`) > DATE(NOW() - INTERVAL 2 DAY)';
@@ -122,8 +135,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function getIDPost($username, $data_insert){
+
+    function getIDPost($username, $data_insert)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id');
         $implus->where('username', $username);
@@ -132,7 +146,8 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    function cekID($id){
+    function cekID($id)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id, image');
         $implus->where('id', $id);
@@ -140,16 +155,18 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function deletePost($id){
+
+    function deletePost($id)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->where('id', $id);
         $qryget = $implus->delete('post');
         $implus->close();
         return $qryget;
     }
-    
-    function getPostByUser($username, $offset, $limit) {
+
+    function getPostByUser($username, $offset, $limit)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username,judul,description,tag,kategori,location,image,date');
         $implus->where('username', $username);
@@ -159,8 +176,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-    function getPostByID($id) {
+
+    function getPostByID($id)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id,username,judul,description,tag,kategori,location,image,date');
         $implus->where('id', $id);
@@ -169,20 +187,22 @@ class Post_model extends CI_Model {
         return $qryget;
     }
 
-    function addComment($user, $id_post, $comment) {
+    function addComment($user, $id_post, $comment)
+    {
         $implus = $this->load->database('implus', TRUE);
         $data = array(
             'username' => $user,
             'id_post' => $id_post,
-            'comment' => $coment
+            'comment' => $comment
         );
         $implus->set('date', 'NOW()', FALSE);
         $implus->insert('comment', $data);
         $implus->close();
         return $implus;
     }
-    
-    function getCommentID($username, $id_post){
+
+    function getCommentID($username, $id_post)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('id');
         $implus->where('username', $username);
@@ -191,8 +211,9 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-        function cekUsernameComment($id_post) {
+
+    function cekUsernameComment($id_post)
+    {
         $implus = $this->load->database('implus', TRUE);
         $implus->select('username');
         $implus->where('id_post', $id_post);
@@ -200,10 +221,11 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-    
-   function getComment($username, $id_post) {
+
+    function getComment($username, $id_post)
+    {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('id, user.name as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
+        $implus->select('comment.id, user.nama as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
         $implus->where('id_post', $id_post);
         $implus->order_by('date', 'DESC');
         $implus->join('user', 'user.username = comment.username');
@@ -211,6 +233,4 @@ class Post_model extends CI_Model {
         $implus->close();
         return $qryget;
     }
-
-
 }
