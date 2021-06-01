@@ -2,19 +2,22 @@
 
 use Restserver\Libraries\REST_Controller;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class Service extends REST_Controller {
+class Service extends REST_Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('activity_model');
     }
 
-    public function index_post() {
+    public function index_post()
+    {
         ini_set('max_execution_time', 300);
         $datapost = json_decode($this->post('request'));
         if (isset($datapost->requestMethod)) {
@@ -147,5 +150,4 @@ class Service extends REST_Controller {
             $this->response((object) array('responseCode' => '08', 'responseDesc' => 'Unknown Request Method or Not Isset', 'responseData' => array()), 404);
         }
     }
-
 }
