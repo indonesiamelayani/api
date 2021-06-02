@@ -182,105 +182,6 @@ function unLike($request)
     $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
     return $result;
 }
-function addLikeComment($request)
-{
-    $result = new stdClass;
-    $result->responseCode = "";
-    $result->responseDesc = "";
-
-    $user = '';
-    $CI = &get_instance();
-    $CI->load->model('activity_model');
-    $CI->load->model('post_model');
-    $datapost = json_decode($request);
-    try {
-        $requestData = $datapost->requestData;
-        $user = $datapost->user;
-        if ($CI->libs_bearer->cekToken() == false) {
-            throw new Exception("Access Forbidden");
-        }
-
-        if (!isset($datapost->user)) {
-            throw new Exception("Parameter user tidak valid");
-        }
-
-        $id_post = $requestData->id_post;
-
-        if (!isset($requestData->id_post)) {
-            throw new Exception("Parameter id_post tidak valid");
-        }
-        $id_comment = $requestData->id_comment;
-
-        if (!isset($requestData->id_comment)) {
-            throw new Exception("Parameter id_comment tidak valid");
-        }
-
-        $resdata = $CI->post_model->insertLike($id_comment, $id_post, $user);
-        $countLike = $CI->post_model->countLike($id_comment, $id_post)->result();
-        if (!$resdata && !$countLike) {
-            throw new Exception("Gagal Like.");
-        }
-        $count = $countLike['0']->count;
-        $updateCount = $CI->post_model->updateLike($id_comment, $id_post, $count);
-        if (!$updateCount) {
-            throw new Exception("Gagal Like.");
-        }
-        $result->responseCode = '00';
-        $result->responseDesc = 'Add Like Berhasil';
-    } catch (Exception $e) {
-        $result->responseCode = '99';
-        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
-    }
-
-    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
-    return $result;
-}
-
-function unLikeComment($request)
-{
-    $result = new stdClass;
-    $result->responseCode = "";
-    $result->responseDesc = "";
-
-    $user = '';
-    $CI = &get_instance();
-    $CI->load->model('activity_model');
-    $CI->load->model('post_model');
-    $datapost = json_decode($request);
-    try {
-        $requestData = $datapost->requestData;
-        $user = $datapost->user;
-        if ($CI->libs_bearer->cekToken() == false) {
-            throw new Exception("Access Forbidden");
-        }
-
-        if (!isset($datapost->user)) {
-            throw new Exception("Parameter user tidak valid");
-        }
-
-        $id_post = $requestData->id_post;
-
-        if (!isset($requestData->id_post)) {
-            throw new Exception("Parameter id_post tidak valid");
-        }
-
-        $resdata = $CI->post_model->unLike($id_post, $user);
-        $countLike = $CI->post_model->countLike($id_post)->result();
-        if (!$resdata && !$countLike) {
-            throw new Exception("Gagal Like.");
-        }
-        $count = $countLike['0']->count;
-        $updateCount = $CI->post_model->updateLike($id_post, $count);
-        $result->responseCode = '00';
-        $result->responseDesc = 'Unlike Berhasil';
-    } catch (Exception $e) {
-        $result->responseCode = '99';
-        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
-    }
-
-    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
-    return $result;
-}
 
 function deletePost($request)
 {
@@ -541,6 +442,11 @@ function getComment($request)
             throw new Exception("Access Forbidden");
         }
 
+        if (!isset($datapost->user)) {
+            throw new Exception("Parameter user tidak valid");
+        }
+        $user = $datapost->user;
+
         if (!isset($datapost->id_post)) {
             throw new Exception("Parameter id_post tidak valid");
         }
@@ -562,6 +468,103 @@ function getComment($request)
         $result->responseCode = '00';
         $result->responseDesc = 'Get Post Sukses.';
         $result->responseData = $resdata;
+    } catch (Exception $e) {
+        $result->responseCode = '99';
+        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
+    }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
+}
+
+function addLikeComment($request)
+{
+    $result = new stdClass;
+    $result->responseCode = "";
+    $result->responseDesc = "";
+
+    $user = '';
+    $CI = &get_instance();
+    $CI->load->model('activity_model');
+    $CI->load->model('post_model');
+    $datapost = json_decode($request);
+    try {
+        $requestData = $datapost->requestData;
+        if ($CI->libs_bearer->cekToken() == false) {
+            throw new Exception("Access Forbidden");
+        }
+
+        if (!isset($datapost->user)) {
+            throw new Exception("Parameter user tidak valid");
+        }
+        $user = $datapost->user;
+
+        if (!isset($requestData->id_comment)) {
+            throw new Exception("Parameter id_comment tidak valid");
+        }
+        $id_comment = $requestData->id_comment;
+
+        $resdata = $CI->post_model->insertLikeComment($id_comment, $user);
+        $countLike = $CI->post_model->countLikeComment($id_comment)->result();
+
+        if (!$resdata && !$countLike) {
+            throw new Exception("Gagal Like.");
+        }
+        $count = $countLike['0']->count;
+        $updateCount = $CI->post_model->updateLikeComment($id_comment, $count);
+        if (!$updateCount) {
+            throw new Exception("Gagal Like.");
+        }
+        $result->responseCode = '00';
+        $result->responseDesc = 'Add Like Berhasil';
+    } catch (Exception $e) {
+        $result->responseCode = '99';
+        $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();
+    }
+
+    $CI->activity_model->insert_activity((isset($datapost->requestMethod) ? $CI->security->xss_clean(trim($datapost->requestMethod)) : '') . ' RESPONSE ', json_encode(array("responseCode" => $result->responseCode, "responseDesc" => $result->responseDesc)));
+    return $result;
+}
+
+function unLikeComment($request)
+{
+    $result = new stdClass;
+    $result->responseCode = "";
+    $result->responseDesc = "";
+
+    $user = '';
+    $CI = &get_instance();
+    $CI->load->model('activity_model');
+    $CI->load->model('post_model');
+    $datapost = json_decode($request);
+    try {
+        $requestData = $datapost->requestData;
+        if ($CI->libs_bearer->cekToken() == false) {
+            throw new Exception("Access Forbidden");
+        }
+
+        if (!isset($datapost->user)) {
+            throw new Exception("Parameter user tidak valid");
+        }
+        $user = $datapost->user;
+
+        if (!isset($requestData->id_comment)) {
+            throw new Exception("Parameter id_comment tidak valid");
+        }
+        $id_comment = $requestData->id_comment;
+
+        $resdata = $CI->post_model->unLikeComment($id_comment, $user);
+        $countLike = $CI->post_model->countLikeComment($id_comment)->result();
+        if ($resdata == 0) {
+            throw new Exception("Gagal Unlike.");
+        }
+        $count = $countLike['0']->count;
+        $updateCount = $CI->post_model->updateLikeComment($id_comment, $count);
+        if (!$updateCount) {
+            throw new Exception("Gagal Like.");
+        }
+        $result->responseCode = '00';
+        $result->responseDesc = 'Unlike Berhasil';
     } catch (Exception $e) {
         $result->responseCode = '99';
         $result->responseDesc = $e->getMessage() . " Ln." . $e->getLine();

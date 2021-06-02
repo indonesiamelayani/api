@@ -51,30 +51,6 @@ class Post_model extends CI_Model
         return $qryget;
     }
 
-    function insertLikeComment($id_comment, $id_post, $user)
-    {
-        $implus = $this->load->database('implus', TRUE);
-        $data = array(
-            'userlike' => $user,
-            'id_post' => $id_post,
-            'id_comment' => $id_comment
-        );
-        $implus->insert('comment', $data);
-        $implus->close();
-        return $implus;
-    }
-
-    function unLikeComment($id_comment, $id_post, $user)
-    {
-        $implus = $this->load->database('implus', TRUE);
-        $implus->where('id_comment', $$id_comment);
-        $implus->where('id_post', $id_post);
-        $implus->where('userlike', $user);
-        $qryget = $implus->delete('comment');
-        $implus->close();
-        return $qryget;
-    }
-
     function countLike($id_post)
     {
         $implus = $this->load->database('implus', TRUE);
@@ -87,23 +63,6 @@ class Post_model extends CI_Model
     {
         $implus = $this->load->database('implus', TRUE);
         $implus->set('countLike', $count);
-        $implus->where('id', $id_post);
-        $implus->update('post');
-        $implus->close();
-        return $implus;
-    }
-    function countLikeComment($id_comment, $id_post)
-    {
-        $implus = $this->load->database('implus', TRUE);
-        $qryget = $implus->query('SELECT COUNT(*) as count FROM `commentLike` WHERE id_post=' . $id_post . '');
-        $implus->close();
-        return $qryget;
-    }
-
-    function updateLikeComment($id_post, $count)
-    {
-        $implus = $this->load->database('implus', TRUE);
-        $implus->set('countLikeComment', $count);
         $implus->where('id', $id_post);
         $implus->update('post');
         $implus->close();
@@ -187,6 +146,28 @@ class Post_model extends CI_Model
         return $qryget;
     }
 
+    function cekUsernameComment($id_post)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('username');
+        $implus->where('id_post', $id_post);
+        $qryget = $implus->get('comment');
+        $implus->close();
+        return $qryget;
+    }
+
+    function getComment($username, $id_post)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('comment.id, user.nama as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
+        $implus->where('id_post', $id_post);
+        $implus->order_by('date', 'DESC');
+        $implus->join('user', 'user.username = comment.username');
+        $qryget = $implus->get('comment');
+        $implus->close();
+        return $qryget;
+    }
+
     function addComment($user, $id_post, $comment)
     {
         $implus = $this->load->database('implus', TRUE);
@@ -212,24 +193,43 @@ class Post_model extends CI_Model
         return $qryget;
     }
 
-    function cekUsernameComment($id_post)
+    function countLikeComment($id_comment)
     {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username');
-        $implus->where('id_post', $id_post);
-        $qryget = $implus->get('comment');
+        $qryget = $implus->query('SELECT COUNT(*) as count FROM `commentLike` WHERE id_comment=' . $id_comment . '');
         $implus->close();
         return $qryget;
     }
 
-    function getComment($username, $id_post)
+    function updateLikeComment($id_comment, $count)
     {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('comment.id, user.nama as commentName, user.foto as commentPhoto, comment as commentText, date as CommentTime,countLike as commentLike');
-        $implus->where('id_post', $id_post);
-        $implus->order_by('date', 'DESC');
-        $implus->join('user', 'user.username = comment.username');
-        $qryget = $implus->get('comment');
+        $implus->set('countLike', $count);
+        $implus->where('id', $id_comment);
+        $implus->update('comment');
+        $implus->close();
+        return $implus;
+    }
+
+    function insertLikeComment($id_comment, $user)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $data = array(
+            'userlike' => $user,
+            'id_comment' => $id_comment
+        );
+        $implus->insert('commentLike', $data);
+        $implus->close();
+        return $implus;
+    }
+
+    function unLikeComment($id_comment, $user)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->where('id_comment', $id_comment);
+        $implus->where('userlike', $user);
+        $implus->delete('commentLike');
+        $qryget = $implus->affected_rows();
         $implus->close();
         return $qryget;
     }
