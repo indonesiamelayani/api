@@ -105,4 +105,23 @@ class Profil_model extends CI_Model {
         return $implus;
     }
 
+    function upd_user($username, $nama, $password, $email, $phone, $bio, $foto)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $pass = md5($password);
+        $data = array(
+            'username' => $username,
+            'nama' => $nama,
+            'password' => $pass,
+            'email' => $email,
+            'phone' => $phone,
+            'bio'   => $bio,
+            'foto'  => $foto
+        );
+        $implus->where('username', $username);
+        $implus->update('user', $data);
+        $implus->close();
+        return $implus;
+    }
+
 }

@@ -24,13 +24,29 @@ class Message_model extends CI_Model {
         return $implus;
     }
 
-    function getPost($username, $offset, $limit) {
+    function addPesan($sent_by, $received_by, $pesan) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,description,tag,location,image,date');
-        $implus->where_in('username', $username);
-        $implus->order_by('date', 'DESC');
+        $data = array(
+            'sent_by' => $sent_by,
+            'received_by' => $received_by,
+            'pesan' => $pesan
+        );
+        $implus->set('sent_at', 'NOW()', FALSE);
+        $implus->insert('chat', $data);
+        $implus->close();
+        return $implus;
+    }
+
+    function getPesan($username, $offset, $limit, $user)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('id, (SELECT foto FROM user WHERE username="' . $user . '") AS profileImg ,sent_by,sent_at');
+        array_push($username, $user);
+        $implus->where_in('sent_by', $username);
+        $implus->group_by('sent_by');
+        $implus->order_by('sent_at', 'DESC');
         $implus->limit($limit, $offset);
-        $qryget = $implus->get('post');
+        $qryget = $implus->get('chat');
         $implus->close();
         return $qryget;
     }

@@ -59,6 +59,10 @@ class Service extends REST_Controller
                     $this->load->helper('post_helper');
                     $this->response(getPost($this->post('request')));
                     break;
+                case 'getPesan':
+                    $this->load->helper('message_helper');
+                    $this->response(getPesan($this->post('request')));
+                    break;
                 case 'getComment':
                     $this->load->helper('post_helper');
                     $this->response(getComment($this->post('request')));
@@ -138,6 +142,14 @@ class Service extends REST_Controller
                 case 'getPostByID':
                     $this->load->helper('post_helper');
                     $this->response(getPostByID($this->post('request')));
+                    break;
+                case 'editProfil':
+                    $this->load->helper('profil_helper');
+                    $this->response(editProfil($this->post('request')));
+                    break;
+                case 'kirimPesan':
+                    $this->load->helper('message_helper');
+                    $this->response(kirimPesan($this->post('request')));
                     break;
 
                 default:
