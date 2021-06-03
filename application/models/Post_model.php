@@ -233,4 +233,19 @@ class Post_model extends CI_Model
         $implus->close();
         return $qryget;
     }
+
+    function checkComment($id_comment, $user)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select('id');
+        $implus->where('id_comment', $id_comment);
+        $implus->where('userlike', $user);
+        $qryget = $implus->get('commentLike');
+        if ($qryget->num_rows() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+        $implus->close();
+    }
 }

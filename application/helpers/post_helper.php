@@ -504,6 +504,11 @@ function addLikeComment($request)
         }
         $id_comment = $requestData->id_comment;
 
+        $check = $CI->post_model->checkComment($id_comment, $user);
+        if ($check != true) {
+            throw new Exception("Gagal Like. SUdah like");
+        }
+
         $resdata = $CI->post_model->insertLikeComment($id_comment, $user);
         $countLike = $CI->post_model->countLikeComment($id_comment)->result();
 
