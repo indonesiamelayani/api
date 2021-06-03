@@ -87,6 +87,9 @@ function getStories($request) {
         foreach ($follower as $key) {
             $data[] = $key['followerUsername'];
         }
+        if(!$data){
+            throw new Exception("Data tidak ditemukan.");
+        }
         $resdata = $CI->stories_model->getStories($data)->result();
         $resmydata = $CI->stories_model->getStories($user)->result();
         if (!$resdata) {
