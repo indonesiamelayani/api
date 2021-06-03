@@ -38,7 +38,7 @@ class User_model extends CI_Model {
 
     function getUser($username) {
         $implus = $this->load->database('implus', TRUE);
-        $implus->select('username,nama,email,phone');
+        $implus->select('username,nama,email,phone,bio,password');
         $implus->where('username', $username);
         $qryget = $implus->get('user');
         $implus->close();
