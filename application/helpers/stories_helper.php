@@ -68,7 +68,7 @@ function getStories($request) {
     $result->responseDesc = "";
 
     $user = '';
-    $data = '';
+    $data = null;
     $CI = & get_instance();
     $CI->load->model('activity_model');
     $CI->load->model('stories_model');
