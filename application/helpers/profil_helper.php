@@ -118,8 +118,10 @@ function editProfil($request)
             throw new Exception("Parameter password tidak valid");
         }
         
-        if($password == NULL || $password == ''){
-            $password = $CI->user_model->cek_pw($username)->password;
+        if(empty($password)){
+            $password = $CI->user_model->cek_fielduser('password', $username)->password;
+        }else{
+            $password = md5($password);
         }
         $email = $requestData->email;
         if (!isset($requestData->email)) {
@@ -142,18 +144,20 @@ function editProfil($request)
         if (!isset($requestData->foto)) {
             throw new Exception("Parameter foto tidak valid");
         }
+        if(empty($foto)){
+            $data_insert = $CI->user_model->cek_fielduser('foto', $username)->foto;
+        }else{
+            $image = base64_decode($foto);
+            $image_name = md5(uniqid(rand(), true));
+            $filename = $image_name . '.' . 'png';
+            if (!file_exists('file/' . $user)) {
+                mkdir('file/' . $user, 0777, true);
+            }
+            $path = 'file/' . $user . '/';
+            file_put_contents($path . $filename, $image);
 
-        $image = base64_decode($foto);
-        $image_name = md5(uniqid(rand(), true));
-        $filename = $image_name . '.' . 'png';
-        if (!file_exists('file/' . $user)) {
-            mkdir('file/' . $user, 0777, true);
+            $data_insert = $user . '/' . $filename;
         }
-        $path = 'file/' . $user . '/';
-        file_put_contents($path . $filename, $image);
-
-        $data_insert = $user . '/' . $filename;
-
         $cekuser = $CI->user_model->cek_user($username);
         $ceknohp = $CI->user_model->cek_nohp($phone);
         if ($cekuser->num_rows() == 0) {

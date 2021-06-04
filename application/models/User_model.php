@@ -82,6 +82,16 @@ class User_model extends CI_Model {
         return $qryget->row();
     }
 
+    function cek_fielduser($field, $username)
+    {
+        $implus = $this->load->database('implus', TRUE);
+        $implus->select($field);
+        $implus->where('username', $username);
+        $qryget = $implus->get('user');
+        $implus->close();
+        return $qryget->row();
+    }
+
     function create_user($username, $nama, $password, $email, $phone, $foto) {
         $implus = $this->load->database('implus', TRUE);
         $pass = md5($password);

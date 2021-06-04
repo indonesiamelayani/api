@@ -108,11 +108,10 @@ class Profil_model extends CI_Model {
     function upd_user($username, $nama, $password, $email, $phone, $bio, $foto)
     {
         $implus = $this->load->database('implus', TRUE);
-        $pass = md5($password);
         $data = array(
             'username' => $username,
             'nama' => $nama,
-            'password' => $pass,
+            'password' => $password,
             'email' => $email,
             'phone' => $phone,
             'bio'   => $bio,
